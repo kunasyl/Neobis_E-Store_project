@@ -19,6 +19,7 @@ class Product(models.Model):
         max_length=100,
         verbose_name=_('Категория')
     )
+    # Главное изображение
     product_image = models.ImageField(upload_to='products/%Y/%m/%d', verbose_name='Изображение товара')
     rating = models.DecimalField(max_digits=3, decimal_places=2, default=0, verbose_name=_('Рейтинг'))
     rating_count = models.IntegerField(default=0, verbose_name=_('Количество обзоров'))
@@ -42,7 +43,7 @@ class ProductImage(models.Model):
         related_name='product_images',
         verbose_name=_('Товар')
     )
-    image = models.ImageField(upload_to ='products_images/', verbose_name=_('Изображение'))
+    image = models.ImageField(upload_to='products_images/%Y/%m/%d', verbose_name=_('Изображение'))
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -53,22 +54,22 @@ class ProductImage(models.Model):
         verbose_name_plural = _('Изображения товара')
 
 
-# class ProductReview(models.Model):
-#     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
-#     author = models.ForeignKey(
-#         to=User,
-#         on_delete=models.CASCADE,
-#         related_name='product_reviews',
-#         verbose_name=_('Отзыв о товары')
-#     )
-#     product = models.ForeignKey(
-#         to=Product,
-#         on_delete=models.CASCADE,
-#         related_name='product_reviews',
-#         verbose_name=_('Товар')
-#     )
-#     rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], verbose_name=_('Отзыв'))
-#     review_text = models.TextField(verbose_name=_('Отзыв'))
+class ProductReview(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    author = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='product_reviews',
+        verbose_name=_('Отзыв о товары')
+    )
+    product = models.ForeignKey(
+        to=Product,
+        on_delete=models.CASCADE,
+        related_name='product_reviews',
+        verbose_name=_('Товар')
+    )
+    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], verbose_name=_('Отзыв'))
+    review_text = models.TextField(verbose_name=_('Отзыв'))
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
