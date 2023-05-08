@@ -1,6 +1,19 @@
 from django.contrib import admin
+from . import models
 
-from .models import Product
+
+class ProductImageInline(admin.TabularInline):
+    model = models.ProductImage
+    extra = 1
 
 
-admin.site.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('title', 'category', 'price')
+    list_filter = ('category', 'sale')
+    # list_editable = ()
+    search_fields = ('title', )
+    inlines = (ProductImageInline,)
+
+
+admin.site.register(models.ProductImage)
+admin.site.register(models.Product, ProductAdmin)
