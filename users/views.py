@@ -1,64 +1,27 @@
 from rest_framework import status
-from rest_framework.generics import RetrieveUpdateAPIView
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.viewsets import ViewSet
+from rest_framework.authtoken.models import Token
 
-from .renderers import UserJSONRenderer
-from .serializers import (
-    LoginSerializer, RegistrationSerializer, UserSerializer,
-)
+from . import serializers, services, models
 
 
-class RegistrationAPIView(APIView):
-    """
-    Разрешить всем пользователям (аутентифицированным и нет) доступ к данному эндпоинту.
-    """
-    permission_classes = (AllowAny,)
-    serializer_class = RegistrationSerializer
-    renderer_classes = (UserJSONRenderer,)
+class UserViewSet(ViewSet):
+    user_services: services.UserServicesInterface = services.UserServicesV1()
 
-    def post(self, request):
-        user = request.data.get('user', {})
-
-        serializer = self.serializer_class(data=user)
+    def create_user(self, request, *args, **kwargs):
+        serializer = serializers.CreateUserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+
+        self.user_services.create_user(data=serializer.validated_data)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-
-class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
-    permission_classes = (IsAuthenticated,)
-    renderer_classes = (UserJSONRenderer,)
-    serializer_class = UserSerializer
-
-    def retrieve(self, request, *args, **kwargs):
-        serializer = self.serializer_class(request.user)
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def update(self, request, *args, **kwargs):
-        serializer_data = request.data.get('user', {})
-
-        serializer = self.serializer_class(
-            request.user, data=serializer_data, partial=True
+    def create_token(self, request, *args, **kwargs):
+        serializer = serializers.CreateTokenSerializer(
+            data=request.data
         )
         serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class LoginAPIView(APIView):
-    permission_classes = (AllowAny,)
-    renderer_classes = (UserJSONRenderer,)
-    serializer_class = LoginSerializer
-
-    def post(self, request):
-        user = request.data.get('user', {})
-
-        serializer = self.serializer_class(data=user)
-        serializer.is_valid(raise_exception=True)
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        tokens = self.user_services.create_token(data=serializer.validated_data)
+        return Response(tokens)
