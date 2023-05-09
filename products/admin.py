@@ -10,7 +10,6 @@ class ProductImageInline(admin.TabularInline):
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('title', 'category', 'price')
     list_filter = ('category', 'sale')
-    # list_editable = ()
     search_fields = ('title', )
     inlines = (ProductImageInline,)
 
