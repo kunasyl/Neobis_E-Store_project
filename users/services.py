@@ -11,13 +11,20 @@ class UserServicesInterface(Protocol):
 
     def create_token(self, data: OrderedDict) -> dict: ...
 
+    def create_cart(self, data: OrderedDict) -> None: ...
+
 
 class UserServicesV1:
     user_repos: repos.UserReposInterface = repos.UserReposV1()
 
     def create_user(self, data: OrderedDict) -> None:
         user = self.user_repos.create_user(data=data)
+        if user:
+            self.create_cart(user)
         self._send_letter_to_email(email=user.email)
+
+    def create_cart(self, user_id) -> None:
+        self.user_repos.create_cart(user_id=user_id)
 
     @staticmethod
     def _send_letter_to_email(email: str) -> None:
