@@ -4,6 +4,8 @@ from . import models
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(read_only=True)
+
     class Meta:
         model = models.Product
         fields = ('title', 'price', 'product_image',
