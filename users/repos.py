@@ -3,7 +3,7 @@ from typing import Protocol, OrderedDict
 from rest_framework.generics import get_object_or_404
 
 from . import models
-from orders.models import Cart
+from .models import Cart
 
 
 class UserReposInterface(Protocol):

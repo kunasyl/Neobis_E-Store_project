@@ -1,8 +1,9 @@
-import jwt
+import jwt, uuid
 from datetime import datetime, timedelta
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class UserManager(BaseUserManager):
@@ -79,3 +80,15 @@ class User(AbstractBaseUser, PermissionsMixin):
         # return token.decode('utf-8')
         return token
 
+
+class Cart(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    user_id = models.OneToOneField(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='user_cart',
+        verbose_name=_('Пользователь')
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

@@ -6,14 +6,14 @@ from . import models
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Product
-        fields = ['title', 'price', 'product_image',
-                  'rating', 'rating_count', 'sale']
+        fields = ('title', 'price', 'product_image',
+                  'rating', 'rating_count', 'sale')
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ProductImage
-        fields = ['image', ]
+        fields = ('image', )
 
 
 # Serializer for product details
@@ -22,8 +22,8 @@ class RetrieveProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Product
-        fields = ['id', 'title', 'price', 'description', 'category', 'product_image',
-                  'rating', 'rating_count', 'sale', 'product_count', 'product_images']
+        fields = ('id', 'title', 'price', 'description', 'category', 'product_image',
+                  'rating', 'rating_count', 'sale', 'product_count', 'product_images')
 
     def create(self, validated_data):
         images_data = validated_data.pop('product_images')
