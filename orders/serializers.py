@@ -4,6 +4,8 @@ from . import models
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(read_only=True)
+
     class Meta:
         model = models.Order
-        fields = ('user_id', 'product_id', 'product_count')
+        fields = ('id', 'user_id', 'product_id', 'product_count')

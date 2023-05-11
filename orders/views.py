@@ -1,9 +1,10 @@
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.permissions import IsAdminUser, IsAuthenticated, AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.response import Response
+from rest_framework import status
 
-from . import models, serializers, services
+from . import models, serializers, services, permissions
 
 
 class OrderView(APIView):
@@ -13,8 +14,12 @@ class OrderView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
+    def get_permissions(self):
+        return permissions.IsOrderUser(),
+
     def get(self, request, *args, **kwargs):
-        orders = self.services.get_orders()
+        # query orders of the current authorized user
+        orders = self.services.get_user_orders(request.user)
         serializer = serializers.OrderSerializer(orders, many=True)
 
         return Response(serializer.data)
@@ -28,3 +33,15 @@ class OrderView(APIView):
             return Response({"success": "Article '{}' created successfully".format(valid_serializer.title)})
 
         return Response(serializer.errors)
+
+    def put(self, request):
+        print(request.data.get('id'))
+        order = self.services.get_order(pk=request.data.get('id'))
+        serializer = serializers.OrderSerializer(order, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+
+            return Response(serializer.data)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
