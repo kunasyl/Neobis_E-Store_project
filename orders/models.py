@@ -4,15 +4,40 @@ from django.utils.translation import gettext_lazy as _
 
 from users.models import User
 from products.models import Product
+from . import choices
 
 
 class Order(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
-    user_id = models.OneToOneField(
+    user_id = models.ForeignKey(
         to=User,
         on_delete=models.CASCADE,
         related_name='user_orders',
         verbose_name=_('Пользователь')
+    )
+    status = models.CharField(
+        choices=choices.OrderStatuses.choices,
+        default=choices.OrderStatuses.NotOrdered,
+        max_length=100,
+        verbose_name=_('Статус заказа')
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ('-created_at',)
+        verbose_name = _('Заказ')
+        verbose_name_plural = _('Заказы')
+
+
+class OrderItem(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    order_id = models.ForeignKey(
+        to=Order,
+        on_delete=models.CASCADE,
+        related_name='order_items',
+        verbose_name=_('Заказ')
     )
     product_id = models.ForeignKey(
         to=Product,
@@ -27,8 +52,9 @@ class Order(models.Model):
 
     class Meta:
         ordering = ('-created_at',)
-        verbose_name = _('Заказ')
-        verbose_name_plural = _('Заказы')
+        verbose_name = _('Товар заказа')
+        verbose_name_plural = _('Товары заказа')
+
 
 
 

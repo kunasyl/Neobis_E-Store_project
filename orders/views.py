@@ -35,7 +35,6 @@ class OrderView(APIView):
         return Response(serializer.errors)
 
     def put(self, request):
-        print(request.data.get('id'))
         order = self.services.get_order(pk=request.data.get('id'))
         serializer = serializers.OrderSerializer(order, data=request.data)
 

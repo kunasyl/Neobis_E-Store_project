@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import User
+from .models import User, Cart
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
@@ -16,3 +16,8 @@ class CreateTokenSerializer(serializers.Serializer):
 
 class GetUserSerializer(serializers.Serializer):
     token = serializers.CharField()
+
+class CartSerializer(serializers.Serializer):
+    class Meta:
+        model = Cart
+        fields = ()

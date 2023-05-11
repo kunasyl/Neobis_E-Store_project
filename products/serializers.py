@@ -8,7 +8,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Product
-        fields = ('title', 'price', 'product_image',
+        fields = ('id', 'title', 'price', 'product_image',
                   'rating', 'rating_count', 'sale')
 
 
@@ -20,6 +20,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 # Serializer for product details
 class RetrieveProductSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(read_only=True)
     product_images = ProductImageSerializer(many=True)
 
     class Meta:
