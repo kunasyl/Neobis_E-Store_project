@@ -21,6 +21,7 @@ class Order(models.Model):
         max_length=100,
         verbose_name=_('Статус заказа')
     )
+    total_price = models.PositiveIntegerField(default=0, verbose_name=_('Сумма заказа'))
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -45,7 +46,8 @@ class OrderItem(models.Model):
         related_name='product_orders',
         verbose_name=_('Товар')
     )
-    product_count = models.PositiveIntegerField()
+    product_price = models.PositiveIntegerField(default=0)
+    product_count = models.PositiveIntegerField(default=1)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

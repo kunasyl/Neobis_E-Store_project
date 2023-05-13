@@ -30,7 +30,7 @@ class OrderView(APIView):
         if serializer.is_valid(raise_exception=True):
             valid_serializer = serializer.save()
 
-            return Response({"success": "Article '{}' created successfully".format(valid_serializer.title)})
+            return Response({"success": "Order '{}' created successfully".format(valid_serializer.id)})
 
         return Response(serializer.errors)
 
