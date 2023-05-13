@@ -1,5 +1,5 @@
-## AuthProject
-**E-Store Project** - Backend API приложение онлайн магазина, написанный на Django Rest Framework.
+## E-Store Project
+**E-Store Project** - REST API приложение онлайн магазина, написанный на Django Rest Framework.
 
 ### Структура:
 Приложение состоит из:
