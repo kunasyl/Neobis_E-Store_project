@@ -41,8 +41,6 @@
             "product_count": 2,
             "product_price": 999
         }
-    ],
-    "total_price": 0,
-    "total_sum": 0
+    ]
 }
 ```

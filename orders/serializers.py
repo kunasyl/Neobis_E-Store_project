@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from . import models
+from .services import OrderServices
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
@@ -23,7 +24,8 @@ class OrderItemSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(read_only=True)
     order_items = OrderItemSerializer(many=True)
-    total_sum = serializers.SerializerMethodField('count_total_price', read_only=True)
+    total_price = serializers.IntegerField(min_value=0, read_only=True)
+    total_sum = serializers.SerializerMethodField('count_total_price')
 
     class Meta:
         model = models.Order
@@ -45,10 +47,12 @@ class OrderSerializer(serializers.ModelSerializer):
         """
         Calculates total sum of the order items price.
         """
+        services = OrderServices()
+
         total_sum = 0
         for order_item in obj.order_items.all():
             total_sum += order_item.product_price * order_item.product_count
-        obj.total_price = total_sum
+        obj.total_price = services.count_price_with_bonus(total_sum)
         obj.save()
 
         return total_sum
